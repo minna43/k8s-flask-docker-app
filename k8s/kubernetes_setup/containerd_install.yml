@@ -1,0 +1,30 @@
+- name: Install containerd
+  apt:
+    name: containerd
+    state: present
+
+- name: Create containerd directory
+  command: mkdir -p /etc/containerd
+
+- name: Set default containerd config file
+  shell: containerd config default | tee /etc/containerd/config.toml
+
+- name: Ensure SystemdCgroup is set to true
+  ansible.builtin.blockinfile:
+    path: /etc/containerd/config.toml
+    marker: "# {mark} ANSIBLE MANAGED BLOCK"
+    insertafter: '^\[plugins."io.containerd.grpc.v1.cri".containerd.runtimes.runc.options\]'
+    block: |
+      SystemdCgroup = true
+  become: true
+
+- name: Enable containerd
+  systemd:
+      name: containerd
+      enabled: yes
+      state: started
+
+- name: Verify containerd is running
+  systemd:
+      name: containerd
+      state: started

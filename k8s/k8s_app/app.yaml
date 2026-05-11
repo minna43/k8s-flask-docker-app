@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: private-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: private-app
+  template:
+    metadata:
+      labels:
+        app: private-app
+    spec:
+      imagePullSecrets:
+        - name: dockerhub-secret
+      tolerations:
+        - key: "node-role.kubernetes.io/control-plane"
+          operator: "Exists"
+          effect: "NoSchedule"
+      containers:
+        - name: app
+          image: minna43/flask-api:v1
+          ports:
+            - containerPort: 5000

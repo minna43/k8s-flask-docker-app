@@ -1,0 +1,20 @@
+- name: Install docker
+  apt:
+    name: docker.io
+    state: present
+- name: Enable docker
+  systemd:
+      name: docker
+      enabled: yes
+      state: started
+- name: Verify docker is running
+  systemd:
+      name: docker
+      state: started
+- name: Get docker version
+  command: docker --version
+  register: docker_version
+
+- name: Display docker version
+  debug:
+    msg: "Docker version {{ docker_version.stdout }}"
