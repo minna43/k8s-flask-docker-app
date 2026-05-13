@@ -85,16 +85,22 @@ ansible-playbook -i inventory.ini kube-playbook.yml
 
 ### Incase any issues related to ssh check ssh service is enabled or not if not installed then install and start ssh server 
 sudo apt install -y openssh-server
+
 sudo systemctl start ssh
+
 ssh-keygen -t rsa
+
 ssh-copy-id test@10.0.2.15
 
 ### Initialize Kubernetes Cluster
 sudo kubeadm init --pod-network-cidr=10.244.0.0/16 
 ### Configure kubectl
 mkdir -p $HOME/.kube
+
 sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+
 sudo chown $(id -u):$(id -g) $HOME/.kube/config
+
 ### Install Pod Network (Flannel)
 kubectl apply -f https://raw.githubusercontent.com/flannel-io/flannel/master/Documentation/kube-flannel.yml
 ### Verify Cluster Setup
@@ -134,6 +140,7 @@ ssh-copy-id ubuntu@<server-ip>
 sudo nano /etc/ssh/sshd_config
 ### Update the following:
 PasswordAuthentication no
+
 PermitRootLogin no
 ### Restart SSH service:
 sudo systemctl restart ssh
